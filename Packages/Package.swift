@@ -57,7 +57,6 @@ let package = Package(
                 
                 dependencies,
                 dependenciesMacros,
-                tagged,
                 testOverlay
             ]
         ),
@@ -78,7 +77,10 @@ let package = Package(
             ]
         ),
         .target(
-            name: "DataModel"
+            name: "DataModel",
+            dependencies: [
+                tagged
+            ]
         ),
         .target(
             name: "NetworkClient",

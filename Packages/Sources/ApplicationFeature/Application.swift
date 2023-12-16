@@ -6,6 +6,7 @@ import DataModel
 public struct Application: Sendable {
     public struct State: Equatable {
         internal var items = IdentifiedArrayOf<NFTItem>()
+        fileprivate var nextPageKey: PageKey?
         
         public init() {
             
@@ -35,13 +36,15 @@ public struct Application: Sendable {
             switch action {
             case .loadData:
                 return Effect.run {
+                    [nextPageKey = state.nextPageKey]
+                    
                     send in
                     
                     await send(
                         .local(
                             .loaded(
                                 Result {
-                                    try await alchemyAPI.getNFTsForOwner()
+                                    try await alchemyAPI.getNFTsForOwner(with: nextPageKey)
                                 }
                             )
                         )
@@ -55,6 +58,7 @@ public struct Application: Sendable {
                     
                 case .loaded(.success(let page)):
                     state.items.append(contentsOf: page.ownedNfts)
+                    state.nextPageKey = page.pageKey
                     return .none
                 }
             }

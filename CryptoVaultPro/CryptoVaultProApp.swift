@@ -1,6 +1,7 @@
 import AlchemyAPIClient
 import ApplicationFeature
 import ComposableArchitecture
+import DataModel
 import NetworkClient
 import SwiftUI
 

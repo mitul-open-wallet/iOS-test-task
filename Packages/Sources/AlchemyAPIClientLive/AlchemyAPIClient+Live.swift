@@ -8,11 +8,16 @@ extension AlchemyAPIClient: DependencyKey {
         
         return AlchemyAPIClient(
             onGetNFTsForOwner: {
-                apiKey, user in
+                apiKey, user, nextPage in
                 
-                try await network.get(
+                var params: [String: Parameter] = ["owner" : .string(user.rawValue)]
+                if let nextPage {
+                    params["pageKey"] = .string(nextPage.rawValue)
+                }
+                
+                return try await network.get(
                     path: "/nft/v3/\(apiKey.rawValue)/getNFTsForOwner",
-                    params: ["owner" : .string(user.rawValue)]
+                    params: params
                 )
             }
         )
