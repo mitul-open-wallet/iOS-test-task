@@ -1,7 +1,10 @@
 import Tagged
 
-public enum Key {}
-public typealias APIKey = Tagged<Key, String>
+public enum Parameters {
+    public enum Key {}
+    public enum ETH {}
+}
 
-public enum ETH {}
-public typealias ETHAddress = Tagged<ETH, String>
+public typealias APIKey = Tagged<Parameters.Key, String>
+
+public typealias ETHAddress = Tagged<Parameters.ETH, String>

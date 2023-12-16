@@ -62,12 +62,15 @@ let package = Package(
         .target(
             name: "AlchemyAPIClientLive",
             dependencies: [
-                "AlchemyAPIClient"
+                "AlchemyAPIClient",
+                "NetworkClient"
             ]
         ),
         .target(
             name: "ApplicationFeature",
             dependencies: [
+                "AlchemyAPIClient",
+                
                 composable
             ]
         ),

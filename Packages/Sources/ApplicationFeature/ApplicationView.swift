@@ -9,6 +9,15 @@ public struct ApplicationView: View {
     }
     
     public var body: some View {
-        Text("ApplicationView")
+        NavigationStack(
+            root: {
+                List {
+                    
+                }
+            }
+        )
+        .task {
+            await store.send(.loadData).finish()
+        }
     }
 }
