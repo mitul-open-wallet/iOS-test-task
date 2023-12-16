@@ -14,6 +14,8 @@ extension AlchemyAPIClient: DependencyKey {
                 if let nextPage {
                     params["pageKey"] = .string(nextPage.rawValue)
                 }
+                //params["spamConfidenceLevel"] = .string("VERY_HIGH")
+                params["excludeFilters[]"] = .string("SPAM")
                 
                 return try await network.get(
                     path: "/nft/v3/\(apiKey.rawValue)/getNFTsForOwner",

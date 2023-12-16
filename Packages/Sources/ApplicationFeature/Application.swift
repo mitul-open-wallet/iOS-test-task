@@ -93,7 +93,7 @@ public struct Application: Sendable {
                 return Effect.send(.loadData)
                 
             case .tapped(let item):
-                state.path.append(.itemDetails(ItemDetails.State()))
+                state.path.append(.itemDetails(ItemDetails.State(item: item)))
                 return .none
                 
             case .path:

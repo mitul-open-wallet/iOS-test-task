@@ -86,6 +86,8 @@ let package = Package(
         .target(
             name: "ItemDetailsFeature",
             dependencies: [
+                "DataModel",
+                
                 composable
             ]
         ),
