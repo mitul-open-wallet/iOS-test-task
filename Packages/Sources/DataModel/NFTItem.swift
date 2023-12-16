@@ -12,7 +12,7 @@ public struct NFTItem: Codable, Sendable, Identifiable, Equatable {
     public let name: String?
     public let description: String?
     public let balance: String
-    public let collection: Collection
+    public let collection: Collection?
     
     public var thumbnailURL: URL? {
         image.thumbnailUrl ?? contract.openSeaMetadata.imageUrl

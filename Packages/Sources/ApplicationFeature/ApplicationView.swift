@@ -17,29 +17,28 @@ public struct ApplicationView: View {
                 WithViewStore(store, observe: \.viewState) {
                     viewStore in
                     
-                    VStack {
-                        List {
-                            ForEach(viewStore.items) {
-                                item in
-                                
-                                Button(action: { store.send(.tapped(item)) }) {
-                                    ItemSummaryView(item: item)
-                                        .contentShape(.rect)
-                                }
-                            }
-                            if viewStore.hasMore {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .frame(maxWidth: .infinity)
-                                    .id(UUID())
-                                    .onAppear(perform: { store.send(.markLoaderVisible(true)) })
-                                    .onDisappear(perform: { store.send(.markLoaderVisible(false)) })
+                    List {
+                        ForEach(viewStore.items) {
+                            item in
+                            
+                            Button(action: { store.send(.tapped(item)) }) {
+                                ItemSummaryView(item: item)
+                                    .contentShape(.rect)
                             }
                         }
-                        .listStyle(.plain)
-                        .refreshable {
-                            await viewStore.send(.pulledToRefresh, while: \.loading)
+                        if viewStore.hasMore {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth: .infinity)
+                                .id(UUID())
+                                .onAppear(perform: { store.send(.markLoaderVisible(true)) })
+                                .onDisappear(perform: { store.send(.markLoaderVisible(false)) })
                         }
+                    }
+                    .searchable(text: viewStore.binding(get: { $0.searched }, send: { .searchChanged($0) }))
+                    .listStyle(.plain)
+                    .refreshable {
+                        await viewStore.send(.pulledToRefresh, while: \.loading)
                     }
                     .buttonStyle(.plain)
                 }
@@ -50,10 +49,10 @@ public struct ApplicationView: View {
                 case .itemDetails:
                     CaseLet(
                         /Application.Path.State.itemDetails,
-                        action: Application.Path.Action.itemDetails,
-                        then: ItemDetailsView.init(store:)
+                         action: Application.Path.Action.itemDetails,
+                         then: ItemDetailsView.init(store:)
                     )
-
+                    
                 }
             }
         )

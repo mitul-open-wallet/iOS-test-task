@@ -1,6 +1,7 @@
 import AlchemyAPIClient
 import ComposableArchitecture
 import DataModel
+import Foundation
 import ItemDetailsFeature
 
 @Reducer
@@ -9,6 +10,7 @@ public struct Application: Sendable {
         let items: IdentifiedArrayOf<NFTItem>
         let loading: Bool
         let hasMore: Bool
+        let searched: String
     }
     
     public struct State: Equatable {
@@ -19,6 +21,9 @@ public struct Application: Sendable {
         internal var loading = false
         internal var loaderVisible = false
         internal var hasMore = true
+        fileprivate var presented = IdentifiedArrayOf<NFTItem>()
+        
+        fileprivate var searched = ""
         
         public init() {
             
@@ -26,9 +31,10 @@ public struct Application: Sendable {
         
         internal var viewState: ViewState {
             ViewState(
-                items: items,
+                items: presented,
                 loading: loading,
-                hasMore: hasMore
+                hasMore: hasMore,
+                searched: searched
             )
         }
     }
@@ -37,6 +43,7 @@ public struct Application: Sendable {
         case loadNextPage
         case markLoaderVisible(Bool)
         case pulledToRefresh
+        case searchChanged(String)
         case tapped(NFTItem)
         
         case local(Local)
@@ -86,6 +93,7 @@ public struct Application: Sendable {
                 switch action {
                 case .loaded(.failure(let error)):
                     state.loading = false
+                    state.hasMore = false
                     return .none
                     
                 case .loaded(.success(let page)):
@@ -95,8 +103,10 @@ public struct Application: Sendable {
                     } else {
                         state.items.append(contentsOf: page.ownedNfts)
                     }
+                    print(state.items.count)
                     state.nextPageKey = page.pageKey
                     state.hasMore = page.pageKey != nil
+                    state.presented = state.items.filter({ $0.matches(term: state.searched) })
                     
                     if page.pageKey == nil {
                         return .none
@@ -125,6 +135,15 @@ public struct Application: Sendable {
                 state.hasMore = true
                 return Effect.send(.loadNextPage)
                 
+            case .searchChanged(let term):
+                state.searched = term
+                guard term.hasValue else {
+                    state.presented = state.items
+                    return .none
+                }
+                state.presented = state.items.filter({ $0.matches(term: term) })
+                return .none
+                
             case .tapped(let item):
                 state.path.append(.itemDetails(ItemDetails.State(item: item)))
                 return .none
@@ -133,7 +152,6 @@ public struct Application: Sendable {
                 return .none
             }
         }
-        ._printChanges()
         .forEach(\.path, action: \.path) {
             Path()
         }
@@ -154,5 +172,21 @@ public struct Application: Sendable {
                 ItemDetails()
             }
         }
+    }
+}
+
+extension NFTItem {
+    fileprivate func matches(term: String) -> Bool {
+        guard term.hasValue else {
+            return true
+        }
+        
+        return name?.contains(term) ?? false
+    }
+}
+
+extension String {
+    fileprivate var hasValue: Bool {
+        !trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty
     }
 }
