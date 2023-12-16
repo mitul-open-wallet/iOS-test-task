@@ -63,6 +63,7 @@ public struct Application: Sendable {
     }
     
     @Dependency(\.alchemyAPIClient) var alchemyAPI
+    @Dependency(\.continuousClock) var clock
     
     public var body: some ReducerOf<Self> {
         Reduce {
@@ -125,7 +126,12 @@ public struct Application: Sendable {
                     if page.pageKey == nil {
                         return .none
                     } else {
-                        return Effect.send(.local(.maybeGoAgain))
+                        return Effect.run {
+                            send in
+                            
+                            try? await clock.sleep(for: .milliseconds(300)) // allow UI to catch up and maybe hide loader
+                            await send(.local(.maybeGoAgain))
+                        }
                     }
                     
                 case .maybeGoAgain:

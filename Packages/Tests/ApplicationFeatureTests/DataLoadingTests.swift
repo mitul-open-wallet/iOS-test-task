@@ -12,6 +12,9 @@ final class DataLoadingTests: XCTestCase {
             reducer: Application.init
         )
         
+        let clock = TestClock()
+        store.dependencies.continuousClock = clock
+        
         var count = 0
         func nextPage(withKey: Bool = true) -> OwnerNFTPage {
             defer {
@@ -42,6 +45,7 @@ final class DataLoadingTests: XCTestCase {
         }
         
         responseStream.continuation.yield(nextPage())
+        await clock.run()
 
         
         await store.receive(\.local.loaded.success) {
@@ -54,6 +58,8 @@ final class DataLoadingTests: XCTestCase {
         }
         
         responseStream.continuation.yield(nextPage())
+        await clock.run()
+        
         await store.receive(\.local.loaded.success) {
             $0.nextPageKey = PageKey("page-key-1")
             $0.loading = false
@@ -68,7 +74,8 @@ final class DataLoadingTests: XCTestCase {
         }
         
         responseStream.continuation.yield(nextPage())
-        
+        await clock.run()
+
         await store.receive(\.local.loaded.success) {
             $0.nextPageKey = PageKey("page-key-2")
             $0.loading = false
