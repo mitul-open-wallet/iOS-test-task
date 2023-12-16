@@ -1,17 +1,17 @@
-//
-//  CryptoVaultProApp.swift
-//  CryptoVaultPro
-//
-//  Created by Jaanus Siim on 16.12.2023.
-//
-
+import ApplicationFeature
+import ComposableArchitecture
 import SwiftUI
 
 @main
 struct CryptoVaultProApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ApplicationView(
+                store: Store(
+                    initialState: Application.State(),
+                    reducer: Application.init
+                )
+            )
         }
     }
 }

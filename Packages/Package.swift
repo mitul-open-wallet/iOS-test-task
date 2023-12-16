@@ -31,10 +31,14 @@ private let withConcurrencyFlags = [
 
 let package = Package(
     name: "Packages",
+    platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
         .library(
-            name: "Packages",
-            targets: ["Packages"]),
+            name: "ApplicationPackages",
+            targets: [
+                "ApplicationFeature"
+            ]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.5.5"),
@@ -43,10 +47,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Packages"),
-        .testTarget(
-            name: "PackagesTests",
-            dependencies: ["Packages"]),
+            name: "ApplicationFeature",
+            dependencies: [
+                composable
+            ]
+        ),
     ]
     .map { (target: Target) in
         guard target.swiftSettings == nil else {

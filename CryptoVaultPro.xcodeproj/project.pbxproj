@@ -11,6 +11,7 @@
 		EABAC2652B2D57D000A74C0F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABAC2642B2D57D000A74C0F /* ContentView.swift */; };
 		EABAC2672B2D57D100A74C0F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABAC2662B2D57D100A74C0F /* Assets.xcassets */; };
 		EABAC26B2B2D57D100A74C0F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABAC26A2B2D57D100A74C0F /* Preview Assets.xcassets */; };
+		EABAC2742B2D5DEE00A74C0F /* ApplicationPackages in Frameworks */ = {isa = PBXBuildFile; productRef = EABAC2732B2D5DEE00A74C0F /* ApplicationPackages */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EABAC2742B2D5DEE00A74C0F /* ApplicationPackages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +42,7 @@
 				EABAC2712B2D593500A74C0F /* Packages */,
 				EABAC2612B2D57D000A74C0F /* CryptoVaultPro */,
 				EABAC2602B2D57D000A74C0F /* Products */,
+				EABAC2722B2D5DEE00A74C0F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +74,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		EABAC2722B2D5DEE00A74C0F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -87,6 +97,9 @@
 			dependencies = (
 			);
 			name = CryptoVaultPro;
+			packageProductDependencies = (
+				EABAC2732B2D5DEE00A74C0F /* ApplicationPackages */,
+			);
 			productName = CryptoVaultPro;
 			productReference = EABAC25F2B2D57D000A74C0F /* CryptoVaultPro.app */;
 			productType = "com.apple.product-type.application";
@@ -365,6 +378,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EABAC2732B2D5DEE00A74C0F /* ApplicationPackages */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ApplicationPackages;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EABAC2572B2D57D000A74C0F /* Project object */;
 }
