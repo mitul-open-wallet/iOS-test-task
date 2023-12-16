@@ -3,21 +3,57 @@
 
 import PackageDescription
 
+private let composable = Target.Dependency.product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+private let dependencies = Target.Dependency.product(name: "Dependencies", package: "swift-dependencies")
+private let dependenciesMacros = Target.Dependency.product(name: "DependenciesMacros", package: "swift-dependencies")
+private let testOverlay = Target.Dependency.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay")
+
+private let withConcurrencyFlags = [
+    .enableUpcomingFeature("BareSlashRegexLiterals"),
+    .enableUpcomingFeature("ConciseMagicFile"),
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("ForwardTrailingClosures"),
+    .enableUpcomingFeature("ImplicitOpenExistentials"),
+    .enableUpcomingFeature("StrictConcurrency"),
+    SwiftSetting.unsafeFlags(
+        [
+            "-Xfrontend",
+            "-warn-long-function-bodies=100",
+            "-Xfrontend",
+            "-warn-long-expression-type-checking=100",
+            "-Xfrontend",
+            "-warn-concurrency",
+            "-Xfrontend",
+            "-enable-actor-data-race-checks"
+        ]
+    )
+]
+
 let package = Package(
     name: "Packages",
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Packages",
             targets: ["Packages"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.5.5"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.5"),
+        .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", exact: "1.0.2"),
+    ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Packages"),
         .testTarget(
             name: "PackagesTests",
             dependencies: ["Packages"]),
     ]
+    .map { (target: Target) in
+        guard target.swiftSettings == nil else {
+            return target
+        }
+        
+        target.swiftSettings = withConcurrencyFlags
+        return target
+    }
 )
