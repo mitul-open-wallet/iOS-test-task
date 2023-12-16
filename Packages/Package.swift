@@ -36,6 +36,7 @@ let package = Package(
         .library(
             name: "ApplicationPackages",
             targets: [
+                "AlchemyAPIClientLive",
                 "ApplicationFeature",
                 "NetworkClientLive",
             ]
@@ -47,6 +48,20 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", exact: "1.0.2"),
     ],
     targets: [
+        .target(
+            name: "AlchemyAPIClient",
+            dependencies: [
+                dependencies,
+                dependenciesMacros,
+                testOverlay
+            ]
+        ),
+        .target(
+            name: "AlchemyAPIClientLive",
+            dependencies: [
+                "AlchemyAPIClient"
+            ]
+        ),
         .target(
             name: "ApplicationFeature",
             dependencies: [
