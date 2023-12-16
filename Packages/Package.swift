@@ -101,6 +101,8 @@ let package = Package(
         .target(
             name: "NetworkClient",
             dependencies: [
+                "DataModel",
+                
                 dependencies,
                 dependenciesMacros,
                 testOverlay

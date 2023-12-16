@@ -96,10 +96,16 @@ public struct Application: Sendable {
                 case .loaded(.failure(let error)):
                     state.loading = false
                     state.hasMore = false
+                    let message: String
+                    if let app = error as? AppError {
+                        message = String(describing: error)
+                    } else {
+                        message = error.localizedDescription
+                    }
                     state.destination = .failureAlert(
                         AlertState(
                             title: TextState("Loading failure"),
-                            message: TextState(error.localizedDescription)
+                            message: TextState(message)
                         )
                     )
                     return .none

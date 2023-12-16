@@ -1,3 +1,4 @@
+import DataModel
 import Dependencies
 import DependenciesMacros
 import Foundation
@@ -47,7 +48,20 @@ public struct NetworkClient: Sendable {
     
     private func perform<Result: Decodable>(request: URLRequest) async throws -> Result {
         let (data, response) = try await onPerformRequest(request)
-        return try decoder.decode(Result.self, from: data)
+        
+        do {
+            return try decoder.decode(Result.self, from: data)
+        } catch {
+            if let error = try? decoder.decode(ServerErrorMessage.self, from: data) {
+                throw AppError.fromSerever(error.error.message)
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401, let string = String(data: data, encoding: .utf8) {
+                throw AppError.fromSerever(string)
+            }
+
+            throw AppError.badJSON
+        }
     }
 }
 
