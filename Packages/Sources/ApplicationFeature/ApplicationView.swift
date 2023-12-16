@@ -30,6 +30,7 @@ public struct ApplicationView: View {
                             ProgressView()
                                 .progressViewStyle(.circular)
                                 .frame(maxWidth: .infinity)
+                                .id(UUID())
                                 .onAppear(perform: { store.send(.loadData) })
                         }
                         .listStyle(.plain)
