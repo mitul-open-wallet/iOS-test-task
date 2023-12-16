@@ -15,6 +15,7 @@ public struct Application: Sendable {
     
     public struct State: Equatable {
         internal var path = StackState<Path.State>()
+        @PresentationState var destination: Destination.State?
         
         internal var items = IdentifiedArrayOf<NFTItem>()
         internal var nextPageKey: PageKey?
@@ -46,6 +47,7 @@ public struct Application: Sendable {
         case searchChanged(String)
         case tapped(NFTItem)
         
+        case destination(PresentationAction<Destination.Action>)
         case local(Local)
         case path(StackAction<Path.State, Path.Action>)
         
@@ -94,6 +96,12 @@ public struct Application: Sendable {
                 case .loaded(.failure(let error)):
                     state.loading = false
                     state.hasMore = false
+                    state.destination = .failureAlert(
+                        AlertState(
+                            title: TextState("Loading failure"),
+                            message: TextState(error.localizedDescription)
+                        )
+                    )
                     return .none
                     
                 case .loaded(.success(let page)):
@@ -148,9 +156,15 @@ public struct Application: Sendable {
                 state.path.append(.itemDetails(ItemDetails.State(item: item)))
                 return .none
                 
+            case .destination:
+                return .none
+
             case .path:
                 return .none
             }
+        }
+        .ifLet(\.$destination, action: \.destination) {
+            Destination()
         }
         .forEach(\.path, action: \.path) {
             Path()
@@ -171,6 +185,25 @@ public struct Application: Sendable {
             Scope(state: \.itemDetails, action: \.itemDetails) {
                 ItemDetails()
             }
+        }
+    }
+    
+    @Reducer
+    public struct Destination {
+        public enum State: Equatable {
+            case failureAlert(AlertState<Action.Alert>)
+        }
+        
+        public enum Action: Sendable {
+            case failureAlert(Alert)
+
+            public enum Alert: Sendable {
+                case remove
+            }
+        }
+        
+        public var body: some ReducerOf<Self> {
+            EmptyReducer()
         }
     }
 }

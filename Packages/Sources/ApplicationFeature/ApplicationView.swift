@@ -56,5 +56,6 @@ public struct ApplicationView: View {
                 }
             }
         )
+        .alert(store: store.scope(state: \.$destination.failureAlert, action: \.destination.failureAlert))
     }
 }
