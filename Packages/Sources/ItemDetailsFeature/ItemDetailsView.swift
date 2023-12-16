@@ -42,6 +42,17 @@ public struct ItemDetailsView: View {
                     Text(name)
                 }
             }
+            if let attributes = store.withState(\.item.raw.metadata?.attributes) {
+                Section {
+                    ForEach(attributes, id: \.value) {
+                        attribute in
+                        
+                        if let type = attribute.trait_type {
+                            LabeledContent(type, value: attribute.value)
+                        }
+                    }
+                }
+            }
         }
     }
 }
