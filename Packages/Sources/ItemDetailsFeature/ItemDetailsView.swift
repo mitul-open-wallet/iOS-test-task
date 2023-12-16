@@ -26,7 +26,9 @@ public struct ItemDetailsView: View {
                                 Color.red
                             } else {
                                 RoundedRectangle(cornerRadius: 4)
+                                    .aspectRatio(1, contentMode: .fit)
                                     .foregroundColor(Color.secondary)
+                                    .overlay(content: { ProgressView().progressViewStyle(.circular) })
                             }
                         }
                     )
