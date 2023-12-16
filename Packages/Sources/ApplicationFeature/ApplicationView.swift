@@ -11,12 +11,12 @@ public struct ApplicationView: View {
     public var body: some View {
         NavigationStack(
             root: {
-                WithViewStore(store, observe: \.items) {
+                WithViewStore(store, observe: \.viewState) {
                     viewStore in
                     
                     VStack {
                         List {
-                            ForEach(viewStore.state) {
+                            ForEach(viewStore.items) {
                                 item in
                                 
                                 Text(item.contract.name)
@@ -27,6 +27,9 @@ public struct ApplicationView: View {
                                 .onAppear(perform: { store.send(.loadData) })
                         }
                         .listStyle(.plain)
+                        .refreshable {
+                            await viewStore.send(.pulledToRefresh, while: \.loading)
+                        }
                     }
                 }
                 .navigationTitle("CryptoVaultPro")

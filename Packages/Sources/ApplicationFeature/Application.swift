@@ -4,17 +4,31 @@ import DataModel
 
 @Reducer
 public struct Application: Sendable {
+    internal struct ViewState: Equatable {
+        let items: IdentifiedArrayOf<NFTItem>
+        let loading: Bool
+    }
+    
     public struct State: Equatable {
         internal var items = IdentifiedArrayOf<NFTItem>()
         fileprivate var nextPageKey: PageKey?
+        internal var loading = false
         
         public init() {
             
+        }
+        
+        internal var viewState: ViewState {
+            ViewState(
+                items: items,
+                loading: loading
+            )
         }
     }
     
     public enum Action: Sendable {
         case loadData
+        case pulledToRefresh
         
         case local(Local)
         
@@ -35,6 +49,7 @@ public struct Application: Sendable {
             
             switch action {
             case .loadData:
+                state.loading = true
                 return Effect.run {
                     [nextPageKey = state.nextPageKey]
                     
@@ -51,13 +66,23 @@ public struct Application: Sendable {
                     )
                 }
                 
+            case .pulledToRefresh:
+                state.nextPageKey = nil
+                return Effect.send(.loadData)
+                
             case .local(let action):
                 switch action {
                 case .loaded(.failure(let error)):
+                    state.loading = false
                     return .none
                     
                 case .loaded(.success(let page)):
-                    state.items.append(contentsOf: page.ownedNfts)
+                    state.loading = false
+                    if state.nextPageKey == nil {
+                        state.items = IdentifiedArray(uniqueElements: page.ownedNfts)
+                    } else {
+                        state.items.append(contentsOf: page.ownedNfts)
+                    }
                     state.nextPageKey = page.pageKey
                     return .none
                 }
