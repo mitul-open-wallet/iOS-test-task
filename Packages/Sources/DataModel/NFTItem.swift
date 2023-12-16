@@ -10,6 +10,7 @@ public struct NFTItem: Codable, Sendable, Identifiable, Equatable {
     public let contract: Contract
     public let image: Image
     public let name: String?
+    public let description: String?
     public let balance: String
     
     public var thumbnailURL: URL? {
