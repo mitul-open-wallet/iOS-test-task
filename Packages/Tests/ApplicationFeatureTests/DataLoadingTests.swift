@@ -75,4 +75,30 @@ final class DataLoadingTests: XCTestCase {
         }
         await store.receive(\.local.maybeGoAgain)
     }
+    
+    func testNoPagingIfNoNextKey() async {
+        let store = TestStore(
+            initialState: Application.State(),
+            reducer: Application.init
+        )
+        
+        store.dependencies.alchemyAPIClient.onGetNFTsForOwner = {
+            _, _, _ in
+            
+            OwnerNFTPage(ownedNfts: [], pageKey: nil)
+        }
+        
+        await store.send(.markLoaderVisible(true)) {
+            $0.loaderVisible = true
+        }
+        await store.receive(\.loadNextPage) {
+            $0.loading = true
+        }
+        await store.receive(\.local.loaded.success) {
+            $0.loading = false
+            $0.hasMore = false
+        }
+
+        await store.finish()
+    }
 }

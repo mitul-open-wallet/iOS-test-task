@@ -97,7 +97,12 @@ public struct Application: Sendable {
                     }
                     state.nextPageKey = page.pageKey
                     state.hasMore = page.pageKey != nil
-                    return Effect.send(.local(.maybeGoAgain))
+                    
+                    if page.pageKey == nil {
+                        return .none
+                    } else {
+                        return Effect.send(.local(.maybeGoAgain))
+                    }
                     
                 case .maybeGoAgain:
                     guard state.loaderVisible else {
