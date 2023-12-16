@@ -73,6 +73,7 @@ let package = Package(
                 "AlchemyAPIClient",
                 "DataModel",
                 "ItemDetailsFeature",
+                "ItemSummaryFeature",
                 
                 composable
             ]
@@ -92,6 +93,12 @@ let package = Package(
             ]
         ),
         .target(
+            name: "ItemSummaryFeature",
+            dependencies: [
+                "DataModel"
+            ]
+        ),
+        .target(
             name: "NetworkClient",
             dependencies: [
                 dependencies,
@@ -102,6 +109,13 @@ let package = Package(
         .target(
             name: "NetworkClientLive",
             dependencies: ["NetworkClient"]
+        ),
+        
+        .testTarget(
+            name: "ApplicationFeatureTests",
+            dependencies: [
+                "ApplicationFeature"
+            ]
         )
     ]
     .map { (target: Target) in

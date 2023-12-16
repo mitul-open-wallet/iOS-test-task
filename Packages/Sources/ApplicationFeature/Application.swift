@@ -8,14 +8,17 @@ public struct Application: Sendable {
     internal struct ViewState: Equatable {
         let items: IdentifiedArrayOf<NFTItem>
         let loading: Bool
+        let hasMore: Bool
     }
     
     public struct State: Equatable {
         internal var path = StackState<Path.State>()
         
         internal var items = IdentifiedArrayOf<NFTItem>()
-        fileprivate var nextPageKey: PageKey?
+        internal var nextPageKey: PageKey?
         internal var loading = false
+        internal var loaderVisible = false
+        internal var hasMore = true
         
         public init() {
             
@@ -24,21 +27,25 @@ public struct Application: Sendable {
         internal var viewState: ViewState {
             ViewState(
                 items: items,
-                loading: loading
+                loading: loading,
+                hasMore: hasMore
             )
         }
     }
     
     public enum Action: Sendable {
-        case loadData
+        case loadNextPage
+        case markLoaderVisible(Bool)
         case pulledToRefresh
         case tapped(NFTItem)
         
         case local(Local)
         case path(StackAction<Path.State, Path.Action>)
         
+        @CasePathable
         public enum Local: Sendable {
             case loaded(Result<OwnerNFTPage, any Error>)
+            case maybeGoAgain
         }
     }
     
@@ -53,7 +60,11 @@ public struct Application: Sendable {
             state, action in
             
             switch action {
-            case .loadData:
+            case .loadNextPage:
+                if state.loading {
+                    return .none
+                }
+                
                 state.loading = true
                 return Effect.run {
                     [nextPageKey = state.nextPageKey]
@@ -85,12 +96,29 @@ public struct Application: Sendable {
                         state.items.append(contentsOf: page.ownedNfts)
                     }
                     state.nextPageKey = page.pageKey
+                    state.hasMore = page.pageKey != nil
+                    return Effect.send(.local(.maybeGoAgain))
+                    
+                case .maybeGoAgain:
+                    guard state.loaderVisible else {
+                        return .none
+                    }
+                    return Effect.send(.loadNextPage)
+                }
+                
+            case .markLoaderVisible(let visible):
+                state.loaderVisible = visible
+                
+                if visible {
+                    return Effect.send(.loadNextPage)
+                } else {
                     return .none
                 }
                 
             case .pulledToRefresh:
                 state.nextPageKey = nil
-                return Effect.send(.loadData)
+                state.hasMore = true
+                return Effect.send(.loadNextPage)
                 
             case .tapped(let item):
                 state.path.append(.itemDetails(ItemDetails.State(item: item)))

@@ -27,11 +27,14 @@ public struct ApplicationView: View {
                                         .contentShape(.rect)
                                 }
                             }
-                            ProgressView()
-                                .progressViewStyle(.circular)
-                                .frame(maxWidth: .infinity)
-                                .id(UUID())
-                                .onAppear(perform: { store.send(.loadData) })
+                            if viewStore.hasMore {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .frame(maxWidth: .infinity)
+                                    .id(UUID())
+                                    .onAppear(perform: { store.send(.markLoaderVisible(true)) })
+                                    .onDisappear(perform: { store.send(.markLoaderVisible(false)) })
+                            }
                         }
                         .listStyle(.plain)
                         .refreshable {
