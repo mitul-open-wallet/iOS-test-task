@@ -48,11 +48,7 @@ public struct NetworkClient: Sendable {
     
     private func perform<Result: Decodable>(request: URLRequest) async throws -> Result {
         let (data, response) = try await onPerformRequest(request)
-        
-        if let string = String(data: data, encoding: .utf8) {
-            print(string)
-        }
-        
+                
         do {
             return try decoder.decode(Result.self, from: data)
         } catch {
