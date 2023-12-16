@@ -6,6 +6,7 @@ import PackageDescription
 private let composable = Target.Dependency.product(name: "ComposableArchitecture", package: "swift-composable-architecture")
 private let dependencies = Target.Dependency.product(name: "Dependencies", package: "swift-dependencies")
 private let dependenciesMacros = Target.Dependency.product(name: "DependenciesMacros", package: "swift-dependencies")
+private let tagged = Target.Dependency.product(name: "Tagged", package: "swift-tagged")
 private let testOverlay = Target.Dependency.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay")
 
 private let withConcurrencyFlags = [
@@ -46,6 +47,7 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.5.5"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.1.5"),
         .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", exact: "1.0.2"),
+        .package(url: "https://github.com/pointfreeco/swift-tagged.git", exact: "0.10.0"),
     ],
     targets: [
         .target(
@@ -53,6 +55,7 @@ let package = Package(
             dependencies: [
                 dependencies,
                 dependenciesMacros,
+                tagged,
                 testOverlay
             ]
         ),
@@ -67,6 +70,9 @@ let package = Package(
             dependencies: [
                 composable
             ]
+        ),
+        .target(
+            name: "DataModel"
         ),
         .target(
             name: "NetworkClient",
