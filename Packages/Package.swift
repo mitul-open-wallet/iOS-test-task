@@ -53,6 +53,8 @@ let package = Package(
         .target(
             name: "AlchemyAPIClient",
             dependencies: [
+                "DataModel",
+                
                 dependencies,
                 dependenciesMacros,
                 tagged,
@@ -70,6 +72,7 @@ let package = Package(
             name: "ApplicationFeature",
             dependencies: [
                 "AlchemyAPIClient",
+                "DataModel",
                 
                 composable
             ]

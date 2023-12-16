@@ -1,3 +1,4 @@
+import DataModel
 import Dependencies
 import DependenciesMacros
 
@@ -6,7 +7,7 @@ public struct AlchemyAPIClient: Sendable {
     private var apiKey = APIKey("<-- undefined -->")
     private var user = ETHAddress("<-- undefined -->")
     
-    public internal(set) var onGetNFTsForOwner: @Sendable (APIKey, ETHAddress) async throws -> Void
+    public internal(set) var onGetNFTsForOwner: @Sendable (APIKey, ETHAddress) async throws -> OwnerNFTPage
     
     public func with(key: APIKey) -> AlchemyAPIClient {
         var modified = self
@@ -20,7 +21,7 @@ public struct AlchemyAPIClient: Sendable {
         return modified
     }
     
-    public func getNFTsForOwner() async throws -> Void {
+    public func getNFTsForOwner() async throws -> OwnerNFTPage {
         try await onGetNFTsForOwner(apiKey, user)
     }
 }

@@ -11,13 +11,26 @@ public struct ApplicationView: View {
     public var body: some View {
         NavigationStack(
             root: {
-                List {
+                WithViewStore(store, observe: \.items) {
+                    viewStore in
                     
+                    VStack {
+                        List {
+                            ForEach(viewStore.state) {
+                                item in
+                                
+                                Text(item.contract.name)
+                            }
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth: .infinity)
+                                .onAppear(perform: { store.send(.loadData) })
+                        }
+                        .listStyle(.plain)
+                    }
                 }
+                .navigationTitle("CryptoVaultPro")
             }
         )
-        .task {
-            await store.send(.loadData).finish()
-        }
     }
 }

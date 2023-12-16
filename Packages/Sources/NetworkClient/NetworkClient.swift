@@ -5,8 +5,9 @@ import Foundation
 @DependencyClient
 public struct NetworkClient: Sendable {
     private var baseURL = URL(string: "https://not.defined")!
+    private let decoder = JSONDecoder()
     
-    public internal(set) var onGet: @Sendable (URL) async throws -> Void
+    public internal(set) var onPerformRequest: @Sendable (URLRequest) async throws -> (Data, URLResponse)
     
     public func with(baseURL: URL) -> Self {
         var modified = self
@@ -14,7 +15,7 @@ public struct NetworkClient: Sendable {
         return modified
     }
     
-    public func get(path: String, params: [String: Parameter] = [:]) async throws -> Void {
+    public func get<Result: Decodable>(path: String, params: [String: Parameter] = [:]) async throws -> Result {
         var url = baseURL.appending(path: path)
         
         if !params.isEmpty {
@@ -23,6 +24,12 @@ public struct NetworkClient: Sendable {
             
             for (name, value) in params {
                 switch value {
+                case .bool(let value):
+                    queryItems.append(URLQueryItem(name: name, value: String(describing: value)))
+
+                case .int(let int):
+                    queryItems.append(URLQueryItem(name: name, value: String(describing: int)))
+
                 case .string(let string):
                     queryItems.append(URLQueryItem(name: name, value: string))
                 }
@@ -35,14 +42,12 @@ public struct NetworkClient: Sendable {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        try await perform(request: request)
+        return try await perform(request: request)
     }
     
-    private func perform(request: URLRequest) async throws {
-        let (data, response) = try await URLSession.shared.data(for: request)
-        if let string = String(data: data, encoding: .utf8) {
-            print(string)
-        }
+    private func perform<Result: Decodable>(request: URLRequest) async throws -> Result {
+        let (data, response) = try await onPerformRequest(request)
+        return try decoder.decode(Result.self, from: data)
     }
 }
 
