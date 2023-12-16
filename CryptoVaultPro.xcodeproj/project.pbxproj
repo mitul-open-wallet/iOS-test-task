@@ -20,6 +20,7 @@
 		EABAC2662B2D57D100A74C0F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EABAC2682B2D57D100A74C0F /* CryptoVaultPro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CryptoVaultPro.entitlements; sourceTree = "<group>"; };
 		EABAC26A2B2D57D100A74C0F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EABAC2712B2D593500A74C0F /* Packages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Packages; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +37,7 @@
 		EABAC2562B2D57D000A74C0F = {
 			isa = PBXGroup;
 			children = (
+				EABAC2712B2D593500A74C0F /* Packages */,
 				EABAC2612B2D57D000A74C0F /* CryptoVaultPro */,
 				EABAC2602B2D57D000A74C0F /* Products */,
 			);
