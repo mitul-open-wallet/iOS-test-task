@@ -19,7 +19,20 @@ public struct ApplicationView: View {
                             ForEach(viewStore.items) {
                                 item in
                                 
-                                Text(item.contract.name)
+                                HStack(alignment: .top) {
+                                    AsyncImage(url: item.thumbnailURL)
+                                        .frame(width: 100, height: 100)
+                                    VStack(alignment: .leading) {
+                                        Text(item.contract.name)
+                                            .font(.subheadline)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        if let name = item.name {
+                                            Text(name)
+                                                .font(.headline)
+                                        }
+                                        Text("Balance: \(item.balance)")
+                                    }
+                                }
                             }
                             ProgressView()
                                 .progressViewStyle(.circular)

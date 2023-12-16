@@ -8,4 +8,11 @@ public struct NFTItem: Codable, Sendable, Identifiable, Equatable {
     public let tokenId: String
     public let tokenType: String
     public let contract: Contract
+    public let image: Image
+    public let name: String?
+    public let balance: String
+    
+    public var thumbnailURL: URL? {
+        image.thumbnailUrl ?? contract.openSeaMetadata.imageUrl
+    }
 }
