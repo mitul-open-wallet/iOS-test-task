@@ -36,7 +36,8 @@ let package = Package(
         .library(
             name: "ApplicationPackages",
             targets: [
-                "ApplicationFeature"
+                "ApplicationFeature",
+                "NetworkClientLive",
             ]
         ),
     ],
@@ -52,6 +53,18 @@ let package = Package(
                 composable
             ]
         ),
+        .target(
+            name: "NetworkClient",
+            dependencies: [
+                dependencies,
+                dependenciesMacros,
+                testOverlay
+            ]
+        ),
+        .target(
+            name: "NetworkClientLive",
+            dependencies: ["NetworkClient"]
+        )
     ]
     .map { (target: Target) in
         guard target.swiftSettings == nil else {
