@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		EABAC2632B2D57D000A74C0F /* CryptoVaultProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABAC2622B2D57D000A74C0F /* CryptoVaultProApp.swift */; };
-		EABAC2652B2D57D000A74C0F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABAC2642B2D57D000A74C0F /* ContentView.swift */; };
 		EABAC2672B2D57D100A74C0F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABAC2662B2D57D100A74C0F /* Assets.xcassets */; };
 		EABAC26B2B2D57D100A74C0F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABAC26A2B2D57D100A74C0F /* Preview Assets.xcassets */; };
 		EABAC2742B2D5DEE00A74C0F /* ApplicationPackages in Frameworks */ = {isa = PBXBuildFile; productRef = EABAC2732B2D5DEE00A74C0F /* ApplicationPackages */; };
@@ -17,7 +16,6 @@
 /* Begin PBXFileReference section */
 		EABAC25F2B2D57D000A74C0F /* CryptoVaultPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CryptoVaultPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EABAC2622B2D57D000A74C0F /* CryptoVaultProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoVaultProApp.swift; sourceTree = "<group>"; };
-		EABAC2642B2D57D000A74C0F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EABAC2662B2D57D100A74C0F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EABAC2682B2D57D100A74C0F /* CryptoVaultPro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CryptoVaultPro.entitlements; sourceTree = "<group>"; };
 		EABAC26A2B2D57D100A74C0F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -60,7 +58,6 @@
 			isa = PBXGroup;
 			children = (
 				EABAC2622B2D57D000A74C0F /* CryptoVaultProApp.swift */,
-				EABAC2642B2D57D000A74C0F /* ContentView.swift */,
 				EABAC2662B2D57D100A74C0F /* Assets.xcassets */,
 				EABAC2682B2D57D100A74C0F /* CryptoVaultPro.entitlements */,
 				EABAC2692B2D57D100A74C0F /* Preview Content */,
@@ -156,7 +153,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EABAC2652B2D57D000A74C0F /* ContentView.swift in Sources */,
 				EABAC2632B2D57D000A74C0F /* CryptoVaultProApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
