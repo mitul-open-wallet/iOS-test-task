@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ItemDetailsFeature
 import SwiftUI
 
 public struct ApplicationView: View {
@@ -9,7 +10,8 @@ public struct ApplicationView: View {
     }
     
     public var body: some View {
-        NavigationStack(
+        NavigationStackStore(
+            store.scope(state: \.path, action: \.path),
             root: {
                 WithViewStore(store, observe: \.viewState) {
                     viewStore in
@@ -19,18 +21,20 @@ public struct ApplicationView: View {
                             ForEach(viewStore.items) {
                                 item in
                                 
-                                HStack(alignment: .top) {
-                                    AsyncImage(url: item.thumbnailURL)
-                                        .frame(width: 100, height: 100)
-                                    VStack(alignment: .leading) {
-                                        Text(item.contract.name)
-                                            .font(.subheadline)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        if let name = item.name {
-                                            Text(name)
-                                                .font(.headline)
+                                Button(action: { store.send(.tapped(item)) }) {
+                                    HStack(alignment: .top) {
+                                        AsyncImage(url: item.thumbnailURL)
+                                            .frame(width: 100, height: 100)
+                                        VStack(alignment: .leading) {
+                                            Text(item.contract.name)
+                                                .font(.subheadline)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            if let name = item.name {
+                                                Text(name)
+                                                    .font(.headline)
+                                            }
+                                            Text("Balance: \(item.balance)")
                                         }
-                                        Text("Balance: \(item.balance)")
                                     }
                                 }
                             }
@@ -44,8 +48,20 @@ public struct ApplicationView: View {
                             await viewStore.send(.pulledToRefresh, while: \.loading)
                         }
                     }
+                    .buttonStyle(.plain)
                 }
                 .navigationTitle("CryptoVaultPro")
+            },
+            destination: {
+                switch $0 {
+                case .itemDetails:
+                    CaseLet(
+                        /Application.Path.State.itemDetails,
+                        action: Application.Path.Action.itemDetails,
+                        then: ItemDetailsView.init(store:)
+                    )
+
+                }
             }
         )
     }

@@ -1,6 +1,7 @@
 import AlchemyAPIClient
 import ComposableArchitecture
 import DataModel
+import ItemDetailsFeature
 
 @Reducer
 public struct Application: Sendable {
@@ -10,6 +11,8 @@ public struct Application: Sendable {
     }
     
     public struct State: Equatable {
+        internal var path = StackState<Path.State>()
+        
         internal var items = IdentifiedArrayOf<NFTItem>()
         fileprivate var nextPageKey: PageKey?
         internal var loading = false
@@ -29,8 +32,10 @@ public struct Application: Sendable {
     public enum Action: Sendable {
         case loadData
         case pulledToRefresh
+        case tapped(NFTItem)
         
         case local(Local)
+        case path(StackAction<Path.State, Path.Action>)
         
         public enum Local: Sendable {
             case loaded(Result<OwnerNFTPage, any Error>)
@@ -66,10 +71,6 @@ public struct Application: Sendable {
                     )
                 }
                 
-            case .pulledToRefresh:
-                state.nextPageKey = nil
-                return Effect.send(.loadData)
-                
             case .local(let action):
                 switch action {
                 case .loaded(.failure(let error)):
@@ -86,8 +87,39 @@ public struct Application: Sendable {
                     state.nextPageKey = page.pageKey
                     return .none
                 }
+                
+            case .pulledToRefresh:
+                state.nextPageKey = nil
+                return Effect.send(.loadData)
+                
+            case .tapped(let item):
+                state.path.append(.itemDetails(ItemDetails.State()))
+                return .none
+                
+            case .path:
+                return .none
             }
         }
         ._printChanges()
+        .forEach(\.path, action: \.path) {
+            Path()
+        }
+    }
+    
+    @Reducer
+    public struct Path {
+        public enum State: Equatable, Sendable {
+            case itemDetails(ItemDetails.State)
+        }
+        
+        public enum Action: Sendable {
+            case itemDetails(ItemDetails.Action)
+        }
+        
+        public var body: some ReducerOf<Self> {
+            Scope(state: \.itemDetails, action: \.itemDetails) {
+                ItemDetails()
+            }
+        }
     }
 }
